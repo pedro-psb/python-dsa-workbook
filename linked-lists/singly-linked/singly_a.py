@@ -1,7 +1,22 @@
+"""Simple Singly linked without Header node
+ADT:
+    insertAfter
+    removeAfter
+    __iter__ and __next__
+
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
+
+
+class PositionError(Exception):
+    pass
+
+
+class NotFoundError(Exception):
+    pass
 
 
 class SingleLinkedList:
@@ -9,14 +24,14 @@ class SingleLinkedList:
 
     @dataclass
     class Node:
-        value: str
+        value: Any
         next: SingleLinkedList.Node | None
 
-    def __init__(self):
+    def __init__(self, elements: list[Any] | None = None):
         self._length = 0
-        self._head: SingleLinkedList.Node | None = None
+        self._head: SingleLinkedList.Node | None = self.Node(None, None)
 
-    def insertAt(self, position: int, element: Any) -> None:
+    def insertAfter(self, position: int, element: Any) -> None:
         """Insert element at any valid position. O(1) for HEAD or log(n) for other positions"""
         pos = self._validatePosition(position)
         # insert first element in log(1)
@@ -40,8 +55,8 @@ class SingleLinkedList:
         prev_old_node.next = new_node
         self._length += 1
 
-    def removeAt(self, position: int) -> SingleLinkedList.Node:
-        """Remove element at any position. O(1) for HEAD or log(n) for other positions"""
+    def removeAfter(self, position: int) -> SingleLinkedList.Node:
+        """Remove element at any position (index 0). O(1) for HEAD or log(n) for other positions"""
         pos = self._validatePosition(position)
         if not self._head:
             raise Exception("list is empty")
@@ -67,7 +82,7 @@ class SingleLinkedList:
         for i, node in enumerate(self):
             if i == pos:
                 return node
-        raise Exception("Could not find node at given position")
+        raise NotFoundError("Could not find node at given position")
 
     def printAll(self):
         """Traverse list and print each node in log(n)"""
@@ -82,12 +97,18 @@ class SingleLinkedList:
         return bool(self._length)
 
     def _validatePosition(self, position: int):
-        """Check if position is valid"""
+        """Check if position (index 0) is valid"""
         if not isinstance(position, int):
-            raise Exception("position must be an integer")
-        if position > self._length or position < 0:
-            raise Exception("position is not valid")
+            raise PositionError("position must be an integer")
+        if (position > self._length) or position < 0:
+            raise PositionError("position is not valid")
         return position
+
+        # len   pos   valid
+        # 0     0       ok
+        # 1     0       ok
+        # 1     1       ok
+        # 1     2       x
 
     def __iter__(self):
         self._cursor = self._head
@@ -106,6 +127,6 @@ class SingleLinkedList:
 
 if __name__ == "__main__":
     ll = SingleLinkedList()
-    ll.insertAt(0, "foo")
-    ll.insertAt(0, "bar")
+    ll.insertAfter(0, "foo")
+    ll.insertAfter(0, "bar")
     ll.printAll()
