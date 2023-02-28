@@ -24,15 +24,32 @@ class Item(NamedTuple):
         pytest.param([Item("foo", 0)], 1, id="one item at beginning"),
         pytest.param([Item("foo", 0), Item("bar", 0)], 2, id="two items at beginning"),
         pytest.param([Item("foo", 0), Item("end", 1)], 2, id="one item at the end"),
+    ),
+)
+def test_insertAtHead(item_list: list[Item], final_len):
+    l = L()
+    for item in item_list:
+        l.insertAtHead(item.value)
+    assert len(l) == final_len
+
+
+@pytest.mark.parametrize(
+    ("item_list", "final_len"),
+    (
+        # nobreak
+        pytest.param([Item("foo", 0)], 2, id="one item at beginning"),
+        pytest.param([Item("foo", 0), Item("bar", 0)], 3, id="two items at beginning"),
+        pytest.param([Item("foo", 0), Item("end", 1)], 3, id="one item at the end"),
         pytest.param(
             [Item("foo", 0), Item("bar", 0), Item("middle", 1)],
-            3,
+            4,
             id="one item at the middle",
         ),
     ),
 )
-def test_insertion(item_list: list[Item], final_len):
+def test_insertAfter(item_list: list[Item], final_len):
     l = L()
+    l.insertAtHead("not_empty")
     for item in item_list:
         l.insertAfter(item.position, item.value)
     assert len(l) == final_len
@@ -96,9 +113,36 @@ def test_remove_failures(position_list):
             l.removeAfter(position)
 
 
-def test_traverse_in_order(filled_list):
-    pass
+@pytest.mark.xfail
+def test_getitem_interface():
+    l = L()
+    for e in ["foo", "bar", "spam"]:
+        l.insertAfter(0, e)
+
+    assert l[0] == "foo"
+    assert l[1] == "bar"
+    assert l[2] == "spam"
 
 
-def test_traverse_in_reverse_order(filled_list):
+def test_traverse_in_order():
+    """should traverse from position 0 to n
+    This is a bit confusing, in order to insertAfter make sense, the list should be
+    1-indexed, so it is possible to insert at the beginning.
+    OR
+    there is an exclusive function to add to the beginning
+    """
+    l = L()
+    for e in ["foo", "bar", "spam"]:
+        l.insertAfter(0, e)
+
+    result = []
+    for e in l:
+        result.append(e.value)
+    assert result[0] == "foo"
+    assert result[1] == "bar"
+    assert result[2] == "spam"
+
+
+@pytest.mark.xfail
+def test_traverse_in_reverse_order():
     pass
