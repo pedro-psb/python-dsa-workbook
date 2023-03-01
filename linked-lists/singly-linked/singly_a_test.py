@@ -33,6 +33,16 @@ def test_insertAtHead(item_list: list[Item], final_len):
     assert len(l) == final_len
 
 
+# TODO make transformation function to adapt this to mark.parametrize
+sample_parametrize_layout = {
+    "header": ("param1", "param2"),
+    "one-item-at-beginning": (),
+    "two-item-at-beginning": (),
+    "one-item-at-end": (),
+    "one-item-at-middle": (),
+}
+
+
 @pytest.mark.parametrize(
     ("item_list", "final_len"),
     (
@@ -53,6 +63,26 @@ def test_insertAfter(item_list: list[Item], final_len):
     for item in item_list:
         l.insertAfter(item.position, item.value)
     assert len(l) == final_len
+
+
+def test_insertAfter_bug():
+    """The lenght is updated, but possibly:
+    1) the node is not being linked correctly
+    2) the list traversal algorithm is bad
+    """
+    l = L()
+    l.insertAtHead("foo")
+    l.insertAfter(0, "bar")
+    l.insertAfter(1, "spam")
+
+    result = []
+    count = 0
+    for e in l:
+        result.append(e)
+        count += 1
+
+    assert len(l) == count
+    assert len(l) == len(result)
 
 
 @pytest.mark.parametrize(
@@ -86,11 +116,11 @@ def test_insertion_failures(item_list: list[Item]):
 )
 def test_remove(position_list, final_len):
     l = L()
-    l.insertAfter(0, "foo")
-    l.insertAfter(0, "bar")
-    l.insertAfter(0, "spam")
+    for e in ["foo", "bar", "spam"]:
+        l.insertAtHead(e)
+
     for position in position_list:
-        l.removeAfter(position)
+        l.removeAt(position)
     assert len(l) == final_len
 
 
@@ -105,39 +135,49 @@ def test_remove(position_list, final_len):
 )
 def test_remove_failures(position_list):
     l = L()
-    l.insertAfter(0, "foo")
-    l.insertAfter(0, "bar")
-    l.insertAfter(0, "spam")
+    for e in ["foo", "bar", "spam"]:
+        l.insertAtHead(e)
+
     with pytest.raises(PositionError):
         for position in position_list:
-            l.removeAfter(position)
+            l.removeAt(position)
 
 
-@pytest.mark.xfail
 def test_getitem_interface():
     l = L()
-    for e in ["foo", "bar", "spam"]:
-        l.insertAfter(0, e)
+    l.insertAtHead("foo")
+    l.insertAfter(0, "bar")
+    l.insertAfter(1, "spam")
 
     assert l[0] == "foo"
     assert l[1] == "bar"
     assert l[2] == "spam"
 
 
-def test_traverse_in_order():
-    """should traverse from position 0 to n
-    This is a bit confusing, in order to insertAfter make sense, the list should be
-    1-indexed, so it is possible to insert at the beginning.
-    OR
-    there is an exclusive function to add to the beginning
-    """
+def test_traverse_all():
     l = L()
     for e in ["foo", "bar", "spam"]:
-        l.insertAfter(0, e)
+        l.insertAtHead(e)
 
     result = []
     for e in l:
         result.append(e.value)
+
+    assert len(result) == len(l)
+
+
+def test_traverse_in_order():
+    """should traverse from position 0 to n"""
+    l = L()
+    l.insertAtHead("foo")
+    l.insertAfter(0, "bar")
+    l.insertAfter(1, "spam")
+
+    result = []
+    for e in l:
+        result.append(e.value)
+
+    assert len(result) == len(l)
     assert result[0] == "foo"
     assert result[1] == "bar"
     assert result[2] == "spam"

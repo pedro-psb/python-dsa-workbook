@@ -19,6 +19,10 @@ class NotFoundError(Exception):
     pass
 
 
+class EmptyListError(Exception):
+    pass
+
+
 class SingleLinkedList:
     """Generic implementation of single linked list with no header and no tail"""
 
@@ -64,37 +68,31 @@ class SingleLinkedList:
         old_prev_node.next = new_node
         self._length += 1
 
-    def removeAfter(self, position: int) -> SingleLinkedList.Node:
-        """Remove element after any position.
+    def removeAt(self, position: int) -> SingleLinkedList.Node:
+        """Remove element at any position.
         Position 0 means at beginning
         O(1) for HEAD or log(n) for other positions
         """
-        pos = self._validatePosition(position)
-        if self._isEmpty():
+        if len(self) == 0:
             raise PositionError("list is empty")
 
-        # remove from head in log(1)
-        node = None
-        if pos == 0:
-            node = self._head.next  # type: ignore because cannot be empty
-            if self._length == 1:
-                self._head.next = None  # type: ignore because cannot be empty
-                self._length -= 1
-                return node  # type: ignore because cannot be empty
-            self._head.next = node.next  # type: ignore because cannot be empty
-            self._length -= 1
-            return node  # type: ignore because cannot be empty
+        pos = self._validatePosition(position)
 
-        # remove from random in log(n)
-        # - check if is last
-        prev_node = self.getNodeAt(pos - 1)
-        node = prev_node.next
-        if node:
-            if node:
-                prev_node.next = node.next if node.next else None  # type: ignore
-                self._length -= 1
-            return node  # type: ignore
-        raise PositionError("The position provided is the last. Cannot remove after it")
+        node = self.getNodeAt(pos)
+        node_next = node.next
+        if len(self) == 1:
+            self._head = node_next
+            self._length -= 1
+            return node
+
+        if pos == 0:
+            self._head = node_next
+        elif pos > 0:
+            node_prev = self.getNodeAt(pos - 1)
+            node_prev.next = node_next
+
+        self._length -= 1
+        return node
 
     def getNodeAt(self, position: int) -> SingleLinkedList.Node:
         """Traverse in log(n) and get node at specified position"""
@@ -114,10 +112,10 @@ class SingleLinkedList:
 
     def _isEmpty(self):
         """Return whether the list is empty"""
-        return not bool(self._length)
+        return self._length == 0
 
     def _validatePosition(self, position: int):
-        """Check if position (index 0) is valid"""
+        """Check if position 0 <= i < len AND is not empty"""
         if not isinstance(position, int):
             raise PositionError("position must be an integer")
         if self._isEmpty():
@@ -132,10 +130,13 @@ class SingleLinkedList:
         # 1     1       ok
         # 1     2       x
 
-    # def __getitem__(self, i):
-    #     if self._isEmpty() or len(self) <= i < 0:
-    #         raise KeyError
-    #     return self.getNodeAt(i)
+    def __getitem__(self, i):
+        try:
+            self._validatePosition(i)
+        except PositionError:
+            raise KeyError
+
+        return self.getNodeAt(i).value
 
     def __iter__(self):
         cursor = self._head
