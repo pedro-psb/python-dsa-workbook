@@ -3,6 +3,8 @@
 This is where I practice implementing DSA in a more systematic way.
 The base for these is the book "Data Structures and Algorithms and Python (2013)" by T Goodrich, R Tamasia, M Goldwasser.
 
+The main goal here is to craft robust implemenetations and good design.
+
 ## Program Draft
 
 - single linked list

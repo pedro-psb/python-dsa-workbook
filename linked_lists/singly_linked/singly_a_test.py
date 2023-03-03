@@ -1,15 +1,20 @@
 """Simple Singly linked without Header
 ADT:
-    insertAfter
-    removeAfter
-    __iter__ and __next__
+    l = L()
+    l = L("foo")
+
+    l.insertAtHead() -> None
+    l.insertAfter(position) -> None
+    l.removeAfter(position) -> Node
+
 
 """
 from typing import Any, NamedTuple
 
 import pytest
-from singly_a import NotFoundError, PositionError
-from singly_a import SingleLinkedList as L
+
+from .singly_a import NotFoundError, PositionError
+from .singly_a import SingleLinkedList as L
 
 
 class Item(NamedTuple):
@@ -31,16 +36,6 @@ def test_insertAtHead(item_list: list[Item], final_len):
     for item in item_list:
         l.insertAtHead(item.value)
     assert len(l) == final_len
-
-
-# TODO make transformation function to adapt this to mark.parametrize
-sample_parametrize_layout = {
-    "header": ("param1", "param2"),
-    "one-item-at-beginning": (),
-    "two-item-at-beginning": (),
-    "one-item-at-end": (),
-    "one-item-at-middle": (),
-}
 
 
 @pytest.mark.parametrize(
@@ -183,6 +178,18 @@ def test_traverse_in_order():
     assert result[2] == "spam"
 
 
-@pytest.mark.xfail
 def test_traverse_in_reverse_order():
-    pass
+    """should traverse from position n to 0"""
+    l = L()
+    l.insertAtHead("foo")
+    l.insertAfter(0, "bar")
+    l.insertAfter(1, "spam")
+
+    result = []
+    for e in reversed(l):
+        result.append(e.value)
+
+    assert len(result) == len(l)
+    assert result[0] == "spam"
+    assert result[1] == "bar"
+    assert result[2] == "foo"

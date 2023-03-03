@@ -48,24 +48,13 @@ class SingleLinkedList:
         """Insert element after valid 0-index position in O(n)"""
         pos = self._validatePosition(position)
 
-        # insert first element in log(1)
-        if not self._head:
-            self._head = SingleLinkedList.Node(element, None)
-            self._length += 1
-            return
-
-        # insert in random pos in log(n)
-        # - check whether is the first element
-        try:
-            old_prev_node = self.getNodeAt(pos - 1)
-        except PositionError:
-            old_prev_node = self._head
+        node = SingleLinkedList.Node(element, None)
 
         old_node = self.getNodeAt(pos)
-        old_next_node = old_node.next
-        new_node = SingleLinkedList.Node(element, old_next_node)
+        old_node_next = old_node.next
+        old_node.next = node
+        node.next = old_node_next
 
-        old_prev_node.next = new_node
         self._length += 1
 
     def removeAt(self, position: int) -> SingleLinkedList.Node:
@@ -150,6 +139,13 @@ class SingleLinkedList:
                 cursor = cursor.next
         except IndexError:
             return
+
+    def __reversed__(self):
+        """This is O(n) magnitude but O(2n) in practice"""
+        reversed_list = []
+        for e in self:
+            reversed_list.append(e)
+        return iter(reversed(reversed_list))
 
     # def __next__(self):
     #     if self._cursor:
