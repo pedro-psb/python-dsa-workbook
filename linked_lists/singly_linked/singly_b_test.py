@@ -8,16 +8,14 @@ from .singly_b import SinglyLL as Singly
 
 
 @pytest.mark.parametrize(
-    **param(
-        {
-            "argnames": "seq",
-            "list-0": [1, 2, 3, 4],
-            "list-1": [1],
-            "list-4": [],
-            "tuple": (1, 2, 3, 4),
-            "tuple": ("foo", "bar", "baz"),
-        }
-    )
+    "seq",
+    (
+        pytest.param([1, 2, 3, 4], id="list-4"),
+        pytest.param([1], id="list-1"),
+        pytest.param([], id="list-empty"),
+        pytest.param((1, 2, 3, 4), id="tuple"),
+        pytest.param(("foo", "bar", "baz"), id="tuple-str"),
+    ),
 )
 def test_init(seq):
     sl = Singly(seq)
@@ -35,28 +33,39 @@ def test_init_fail():
 # appending
 
 
-def test_append():
-    ...
-
-
-def test_appendLast():
-    ...
+@pytest.mark.parametrize(
+    "seq",
+    (
+        pytest.param([1], id="1-element"),
+        pytest.param([1, 2, 3, 4, 5], id="5-elements"),
+    ),
+)
+def test_append_and_appendLast(seq):
+    sl = Singly(seq)
+    assert str(sl)[1:-1] == str(seq)[1:-1]
+    assert len(sl) == len(seq)
 
 
 def test_append_fail():
-    ...
+    """Not sure what should fail"""
 
 
 # removing
 
 
-def test_pop():
-    ...
-
-
-def test_popLast():
+@pytest.mark.parametrize(
+    "pop_repeats",
+    (
+        pytest.param(1, id="1-element"),
+        pytest.param(4, id="5-elements"),
+    ),
+)
+def test_pop_and_popLast(pop_repeats):
     ...
 
 
 def test_pop_fail():
+    # pop empty
+
+    # pop after empty
     ...

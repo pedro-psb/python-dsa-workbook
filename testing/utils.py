@@ -6,9 +6,21 @@ class ParametrizeError(Exception):
 
 
 def transform_parametrize(in_form: dict[str, Any]) -> dict:
-    """takes dict-form test and transform to pytest parametrize form for dict unpacking"""
+    """
+    Takes dict-form test and transform to pytest parametrize form for dict unpacking
+    TODO: parse str arganames
+
+    @in_form: dict
+
+    """
 
     argnames = in_form.get("argnames")
+    # if isinstance(argnames, str):
+    #     raise ParametrizeError("str parsing ('arg1, arg2, ...') not implemented yet")
+    # if not isinstance(argnames, Sequence):
+    #     raise ParametrizeError("should be sequence")
+
+    # arglen = len(argnames)
     argvalues = tuple(in_form.values())[1:]
     ids = tuple([key for key in in_form.keys() if key != "argnames"])
 
@@ -24,6 +36,7 @@ def transform_parametrize(in_form: dict[str, Any]) -> dict:
     if not isinstance(argnames, (Sequence, str)):
         raise ParametrizeError("in_form['argnames'] should be a Sequence or str")
 
+    # if arglen > 1:
     for value in argvalues:
         if not isinstance(value, Sequence) or isinstance(value, str):
             raise ParametrizeError(

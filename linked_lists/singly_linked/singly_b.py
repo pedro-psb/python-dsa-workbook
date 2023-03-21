@@ -8,6 +8,8 @@ ADT:
     popLast
 
     __iter__,
+    __len__,
+    __repr__
 """
 
 from __future__ import annotations
@@ -94,11 +96,6 @@ class SinglyLL:
         for value in self:
             repr += f"{value.__repr__()}, "
         return f"[{repr[:-2]}]"
-
-    def values(self):
-        """
-        Return iterator with _Node values
-        """
 
 
 if __name__ == "__main__":
