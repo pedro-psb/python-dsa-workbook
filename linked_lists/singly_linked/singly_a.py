@@ -1,5 +1,8 @@
-"""Simple Singly linked without Header node
+"""
+Simple Singly linked without Header node
+
 ADT:
+    insertAtHead
     insertAfter
     removeAfter
     __iter__ and __next__
@@ -156,3 +159,7 @@ class SingleLinkedList:
 
     def __len__(self):
         return self._length
+
+
+if __name__ == "__main__":
+    ll = SingleLinkedList()
