@@ -4,11 +4,11 @@ from typing import Any, Sequence
 class ParametrizeError(Exception):
     """Error in the transform_parametrize function"""
 
-
+# TODO: add support for parsing str arganames. Eg ("arg1,arg2")
+# TODO: add support for: {case-a: "unique_arg"} over {case-a: ["unique-arg"]}
 def transform_parametrize(in_form: dict[str, Any]) -> dict:
     """
     Takes dict-form test and transform to pytest parametrize form for dict unpacking
-    TODO: parse str arganames
 
     @in_form: dict
 

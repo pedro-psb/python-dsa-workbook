@@ -2,7 +2,7 @@ import pytest
 
 from testing.utils import transform_parametrize as param
 
-from .singly_b import SinglyLL as Singly
+from .singly_b import Singly
 
 # initializing
 

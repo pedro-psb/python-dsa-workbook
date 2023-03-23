@@ -20,12 +20,12 @@ from typing import Any, NamedTuple, TypeVar
 T = TypeVar("T")
 
 
-class _Node(NamedTuple):
+class Node(NamedTuple):
     value: Any
-    next: _Node | None
+    next: Node | None
 
 
-class SinglyLL:
+class Singly:
     """
     Singly linked list with no positions
     """
@@ -35,41 +35,41 @@ class SinglyLL:
         Initializes linked list (optionally with a sequence)
         """
         self._size = 0
-        self._head: _Node | None = None
+        self._head: Node | None = None
 
         # optional sequence initializer
         if elements:
             if isinstance(elements, Sequence):
                 # initialize list in-place and in order
                 # where sequence[0] = head
-                self._head = _Node(elements[-1], None)
+                self._head = Node(elements[-1], None)
                 self._size += 1
                 for e in reversed(elements[:-1]):
                     prev = self._head
-                    self._head = _Node(e, prev)
+                    self._head = Node(e, prev)
                     self._size += 1
             else:
                 raise TypeError(f"elements should be a sequence, not {type(elements)}")
 
-    def append(self, element) -> _Node:
+    def append(self, element) -> Node:
         """
         Append at the beginning
         """
         ...
 
-    def appendLast(self, element) -> _Node:
+    def appendLast(self, element) -> Node:
         """
         Append at the end
         """
         ...
 
-    def pop(self) -> _Node:
+    def pop(self) -> Node:
         """
         Pops first element
         """
         ...
 
-    def popLast(self) -> _Node:
+    def popLast(self) -> Node:
         """
         Pops last element
         """
@@ -97,8 +97,33 @@ class SinglyLL:
             repr += f"{value.__repr__()}, "
         return f"[{repr[:-2]}]"
 
+# TODO implement SinglyB (extended version)
+class SinglyB(Singly):
+    """
+    Extended version of Singly.
+    Add general purpose insert, remove and find
+    """
+
+    def insertAfter(self, node: Node, value: Any):
+        """
+        Insert value after node
+        """
+
+    def insertBefore(self, node: Node, value: Any):
+        """
+        Insert value before node
+        """
+
+    def find(self, match_value: Any) -> tuple[Node, Node]:
+        """
+        Find node with vaue that matches @match_value and
+        return tuple with (prev_node, match_node).
+        """
+        ...
+
+
 
 if __name__ == "__main__":
-    llist = SinglyLL([1, 2, 3, 4])
+    llist = Singly([1, 2, 3, 4])
     # for n in llist:
     #     print(n)
